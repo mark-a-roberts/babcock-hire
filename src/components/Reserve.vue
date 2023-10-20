@@ -42,12 +42,10 @@ export default {
       this.vehicle = await fetch(`${hireAPI}/vehicles/${id}`).then((res) => res.json())
     },
   },
-  mounted() {
-    console.log( "Id is" + this.id );
-    this.getVehicle(this.id);
-  },
   created() {
     this.getTypes();
+    console.log( "Id is" + this.id );
+    this.getVehicle(this.id);
   }
 }
 </script>
