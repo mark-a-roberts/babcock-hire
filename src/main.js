@@ -12,7 +12,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import Home from "@/components/Home.vue";
 import VehicleList from "@/components/VehicleList.vue";
-import Reserve from "@/components/Reserve.vue";
+import VehicleReserve from "@/components/VehicleReserve.vue";
 
 const vuetify = createVuetify({
   components,
@@ -35,7 +35,8 @@ const routes = [
   {
     path: '/reserve/:id/:start/:end',
     name: 'reserve',
-    component: Reserve
+    component: VehicleReserve,
+    props: true
   },
   {
     path: '/vehicles',

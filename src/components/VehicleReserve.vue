@@ -2,9 +2,9 @@
 import VehicleCard from "@/components/VehicleCard.vue";
 
 defineProps({
-  id: Number,
-  start: String,
-  end: String
+  id: { type: Number, default: 1},
+  start: { type: String, default: '23-10-2023'},
+  end: { type: String, default: '20-10-2023'}
 })
 
 </script>
@@ -42,10 +42,11 @@ export default {
       this.vehicle = await fetch(`${hireAPI}/vehicles/${id}`).then((res) => res.json())
     },
   },
+  mounted() {
+    this.getVehicle(this.id);
+  },
   created() {
     this.getTypes();
-    console.log( "Id is" + this.id );
-    this.getVehicle(this.id);
   }
 }
 </script>
