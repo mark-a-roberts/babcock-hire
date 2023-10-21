@@ -5,6 +5,7 @@ import App from './App.vue'
 
 import {createRouter, createWebHashHistory} from 'vue-router'
 
+import store from "@/store";
 // Vuetify
 import 'vuetify/styles'
 import {createVuetify} from 'vuetify';
@@ -39,6 +40,12 @@ const routes = [
     props: true
   },
   {
+    path: '/book/:id/:start/:end',
+    name: 'book',
+    component: VehicleReserve,
+    props: true
+  },
+  {
     path: '/vehicles',
     name: 'vehicles',
     component: VehicleList
@@ -55,4 +62,4 @@ const router = createRouter({
   routes, // short for `routes: routes`
 })
 
-createApp(App).use(router).use(vuetify).mount('#app')
+createApp(App).use(store).use(router).use(vuetify).mount('#app')

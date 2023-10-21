@@ -12,7 +12,15 @@ defineProps({
 <template>
   <h1>Reserve Vehicle</h1>
   <h2>Start: {{start}}  End: {{end}}</h2>
-  <VehicleCard :vehicle="vehicle" :types="types"></VehicleCard>
+  <VehicleCard :vehicle="vehicle" :types="types">
+    <template #actions>
+      <v-card-actions v-if="start">
+        <v-btn color="indigo-darken-3" :to="{ name: 'book', params: { id: vehicle.id, start: start, end: end }}"
+        >Make Booking
+        </v-btn>
+      </v-card-actions>
+    </template>
+  </VehicleCard>
 </template>
 
 <script>
