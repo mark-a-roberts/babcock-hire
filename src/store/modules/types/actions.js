@@ -12,7 +12,7 @@ export default {
       commit('setTypes', types);
 
     } catch (error) {
-      const notification = "An error occurred during fetching vehicles.Please try again.";
+      const notification = "An error occurred during fetching types.Please try again.";
       commit("notifications/setNotification", notification, { root: true })
     }
   }
