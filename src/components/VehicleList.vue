@@ -1,5 +1,4 @@
 <script setup>
-import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import VehicleCard from "@/components/VehicleCard.vue";
 </script>
 
@@ -7,50 +6,22 @@ import VehicleCard from "@/components/VehicleCard.vue";
   <div>
     <h1>Vehicles</h1>
     <v-row>
-      <v-menu
-          v-model="menu1"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          lazy
-          transition="scale-transition"
-          offset-y
-          full-width
-          min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field
-              v-model="start"
-              label="Start Date"
-              prepend-icon="event"
-              readonly
-              v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="start" @input="menu1 = false"></v-date-picker>
-      </v-menu>
-      <v-menu
-          v-model="menu2"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          lazy
-          transition="scale-transition"
-          offset-y
-          full-width
-          min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field
-              v-model="end"
-              label="End Date"
-              prepend-icon="event"
-              readonly
-              v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="end" @input="menu2 = false"></v-date-picker>
-      </v-menu>
-    </v-row>
+      <v-text-field
+          v-model="start"
+          type="date"
+          :min="today"
+          label="Start Date"
+          prepend-icon="event"
+      ></v-text-field>
+      <v-text-field
+          v-model="end"
+          type="date"
+          :min="today"
+          label="End Date"
+          prepend-icon="event"
+      ></v-text-field>
 
+    </v-row>
 
     <VehicleCard v-for="vehicle in available()"
                  :vehicle="vehicle"
@@ -73,11 +44,13 @@ import VehicleCard from "@/components/VehicleCard.vue";
 const hireAPI = "http://localhost:3000"
 export default {
   data() {
+    const today = new Date().toISOString().slice(0, 10);
     return {
       menu1: false,
       menu2: false,
-      start: new Date().toISOString().slice(0, 10),
-      end: new Date().toISOString().slice(0, 10),
+      today,
+      start: today,
+      end: today,
       types: [],
       bookings: [],
       vehicles: []
@@ -88,14 +61,14 @@ export default {
     reservations(vehicle, start, end) {
       // only bookings for vehicle in time frame
       const period = {
-        from: new Date( start),
+        from: new Date(start),
         to: new Date(end)
       }
       return this.bookings.filter(
           (b) => {
             if (b.id === vehicle.id) {
               // convert booking ISO into Date*
-              const book  = {
+              const book = {
                 from: new Date(b.from),
                 to: new Date(b.to)
               }
@@ -117,11 +90,11 @@ export default {
       )
     },
     async getBookings(start, end) {
-      const params = new URLSearchParams( { start, end }).toString();
-      this.bookings = await fetch( `${hireAPI}/bookings?${params}`).then((res) => res.json())
+      const params = new URLSearchParams({start, end}).toString();
+      this.bookings = await fetch(`${hireAPI}/bookings?${params}`).then((res) => res.json())
     },
     async getTypes() {
-      this.types = await fetch( `${hireAPI}/types`).then((res) => res.json())
+      this.types = await fetch(`${hireAPI}/types`).then((res) => res.json())
     },
     async getVehicles() {
       this.vehicles = await fetch(`${hireAPI}/vehicles`).then((res) => res.json())
@@ -130,7 +103,7 @@ export default {
   created() {
     this.getTypes();
     this.getVehicles();
-    this.getBookings( this.start, this.end);
+    this.getBookings(this.start, this.end);
   }
 
 }
