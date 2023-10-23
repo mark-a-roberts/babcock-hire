@@ -37,13 +37,18 @@ const routes = [
     path: '/reserve/:id/:start/:end',
     name: 'reserve',
     component: VehicleReserve,
-    props: true
+    props: ({params}) => ({
+      ...params,
+      id: Number.parseInt(params.id, 10) || 0
+    })
   },
   {
     path: '/book/:id/:start/:end',
     name: 'book',
     component: VehicleReserve,
-    props: true
+    props: ({params}) => ({
+      ...params,
+      id: Number.parseInt(params.id, 10) || 0})
   },
   {
     path: '/vehicles',

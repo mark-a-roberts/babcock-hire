@@ -41,6 +41,9 @@ import VehicleCard from "@/components/VehicleCard.vue";
 </template>
 
 <script>
+
+import { isProxy, toRaw } from 'vue';
+
 const hireAPI = "http://localhost:3000"
 export default {
   data() {
@@ -64,15 +67,24 @@ export default {
         from: new Date(start),
         to: new Date(end)
       }
-      return this.bookings.filter(
+
+
+      const bookings = isProxy(this.bookings) ? toRaw(this.bookings): this.bookings;
+
+      return bookings.filter(
           (b) => {
-            if (b.id === vehicle.id) {
+            const book = {
+              id: b.vehicle_id,
+              from: new Date(b.from),
+              to: new Date(b.to)
+            }
+
+            if (b.vehicle_id == vehicle.id) {
               // convert booking ISO into Date*
-              const book = {
-                from: new Date(b.from),
-                to: new Date(b.to)
-              }
-              return (book.from < period.to) && (book.to > period.from)
+              console.log( `Check: ${vehicle.id}`);
+              console.log(period);
+              console.log( book);
+              return (book.from <= period.to) && (book.to >= period.from)
             }
             return false;
           }
@@ -92,6 +104,8 @@ export default {
     async getBookings(start, end) {
       const params = new URLSearchParams({start, end}).toString();
       this.bookings = await fetch(`${hireAPI}/bookings?${params}`).then((res) => res.json())
+      console.log( "bookings")
+      console.log( this.bookings);
     },
     async getTypes() {
       this.types = await fetch(`${hireAPI}/types`).then((res) => res.json())

@@ -1,3 +1,3 @@
 export default {
-  setBookings:(state,vehicles)=>state.bookings=bookings
+  setBookings:(state,bookings)=>state.bookings=bookings
 }
