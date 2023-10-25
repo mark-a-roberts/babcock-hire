@@ -7,13 +7,12 @@ defineProps({
   start: { type: String, default: '2023-10-20'},
   end: { type: String, default: '2023-10-20'}
 })
-
 </script>
 
 <template>
   <h1>Reserve Vehicle</h1>
   <h2>Start: {{start}}  End: {{end}}</h2>
-  <VehicleCard :vehicle="vehicle" :types="types">
+  <VehicleCard v-if="vehicle" :vehicle="vehicle" :types="types">
     <template #actions>
       <v-card-actions v-if="start">
         <v-btn color="indigo-darken-3" @click="bookIt" :to="{ name: 'book', params: { id: vehicle.id, start: start, end: end }}"
@@ -22,26 +21,31 @@ defineProps({
       </v-card-actions>
     </template>
   </VehicleCard>
+  <p v-else>
+    No vehicle found
+  </p>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import store from "@/store";
-
-const hireAPI = "http://localhost:3000"
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   data() {
     return {
-      types: [],
-      vehicle: {}
+    }
+  },
+  computed: {
+    ...mapGetters( 'types', { types: 'getTypes', byCode: 'byCode' }),
+    ...mapGetters( 'vehicles', { vehicles: 'getVehicles', byId: 'byId' }),
+    vehicle: function () {
+      return this.byId(this.id)
     }
   },
   methods: {
-    ...mapActions([
-      // map `this.createBooking(booking)` to `this.$store.dispatch('makeBooking', booking)`
-      'bookings/createBooking',
-    ]),
+    ...mapActions('bookings', [ 'createBooking']),
+    ...mapActions('types', [ 'setTypes']),
+    ...mapActions('vehicles', [ 'setVehicles']),
+
     category(item) {
       const t = this.types?.find( (t) => t.type === item.category)
       return t ? t.name : ""
@@ -50,26 +54,17 @@ export default {
       const t = this.types?.find( (t) => t.type === item.category)
       return t ? t.cost : ""
     },
-    async getTypes() {
-      this.types = await fetch( `${hireAPI}/types`).then((res) => res.json())
-    },
-    async getVehicle(id) {
-      console.log("Id:" + id);
-      this.vehicle = await fetch(`${hireAPI}/vehicles/${id}`).then((res) => res.json())
-    },
     async bookIt() {
-      await store.dispatch('bookings/createBooking', {
+      this.createBooking({
         vehicle_id: this.id,
         from: this.start,
         to: this.end
       })
     }
   },
-  mounted() {
-    this.getVehicle(this.id);
-  },
   created() {
-    this.getTypes();
+    this.setTypes();
+    this.setVehicles();
   }
 }
 </script>

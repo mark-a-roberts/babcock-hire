@@ -1,4 +1,4 @@
-const apiRoot = "http://localhost:3000";
+const apiRoot = import.meta.env.VITE_HIRE_API;
 
 export default {
   async setVehicles({ commit }) {

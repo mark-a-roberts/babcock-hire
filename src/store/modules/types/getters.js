@@ -1,3 +1,4 @@
 export default {
-  getTypes:(state)=>state.types
+  getTypes:(state)=>state.types,
+  byCode:(state)=>(code)=>(state.types.find((s)=>(s.code === code)))
 }

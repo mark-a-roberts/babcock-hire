@@ -23,7 +23,7 @@ import VehicleCard from "@/components/VehicleCard.vue";
 
     </v-row>
 
-    <VehicleCard v-for="vehicle in available()"
+    <VehicleCard v-for="vehicle in available"
                  :vehicle="vehicle"
                  :key="vehicle.id"
                  :types="types"
@@ -42,9 +42,9 @@ import VehicleCard from "@/components/VehicleCard.vue";
 
 <script>
 
-import { isProxy, toRaw } from 'vue';
+import {mapActions, mapGetters} from "vuex";
+import {isProxy,toRaw} from "vue";
 
-const hireAPI = "http://localhost:3000"
 export default {
   data() {
     const today = new Date().toISOString().slice(0, 10);
@@ -53,71 +53,41 @@ export default {
       menu2: false,
       today,
       start: today,
-      end: today,
-      types: [],
-      bookings: [],
-      vehicles: []
+      end: today
     }
   },
-  methods: {
-    // get list of bookings within date range
-    reservations(vehicle, start, end) {
-      // only bookings for vehicle in time frame
-      const period = {
-        from: new Date(start),
-        to: new Date(end)
-      }
-
-
-      const bookings = isProxy(this.bookings) ? toRaw(this.bookings): this.bookings;
-
-      return bookings.filter(
-          (b) => {
-            const book = {
-              id: b.vehicle_id,
-              from: new Date(b.from),
-              to: new Date(b.to)
-            }
-
-            if (b.vehicle_id == vehicle.id) {
-              // convert booking ISO into Date*
-              console.log( `Check: ${vehicle.id}`);
-              console.log(period);
-              console.log( book);
-              return (book.from <= period.to) && (book.to >= period.from)
-            }
-            return false;
-          }
-      )
-    },
+  computed: {
+    // map this.bookings to 'bookings/getBookings'
+    ...mapGetters( 'types', { types: 'getTypes', byCode: 'byCode' }),
+    ...mapGetters( 'vehicles', { vehicles: 'getVehicles', byId: 'byId' }),
+    ...mapGetters( 'bookings', {
+      bookings: 'getBookings',
+      between: 'between',
+      vehicleBookings: 'vehicle'
+    }),
     // get list of available vehicles
     available() {
-      return this.vehicles.filter(
+      const vehicles = isProxy(this.vehicles) ? toRaw(this.vehicles) : this.vehicles;
+      return vehicles.filter(
           (v) => {
             // only bookings for vehicle in time frame
-            const bookings = this.reservations(v, this.start, this.end)
+            const bookings = this.vehicleBookings(v.id, this.start, this.end)
             // check for vehicle in bookings
             return bookings.length === 0;
           }
       )
-    },
-    async getBookings(start, end) {
-      const params = new URLSearchParams({start, end}).toString();
-      this.bookings = await fetch(`${hireAPI}/bookings?${params}`).then((res) => res.json())
-      console.log( "bookings")
-      console.log( this.bookings);
-    },
-    async getTypes() {
-      this.types = await fetch(`${hireAPI}/types`).then((res) => res.json())
-    },
-    async getVehicles() {
-      this.vehicles = await fetch(`${hireAPI}/vehicles`).then((res) => res.json())
-    },
+    }
+  },
+  methods: {
+    ...mapActions('types', [ 'setTypes']),
+    ...mapActions('vehicles', [ 'setVehicles']),
+    ...mapActions('bookings', [ 'setBookings'])
   },
   created() {
-    this.getTypes();
-    this.getVehicles();
-    this.getBookings(this.start, this.end);
+    // actions to start API calls
+    this.setTypes();
+    this.setVehicles();
+    this.setBookings();
   }
 
 }
