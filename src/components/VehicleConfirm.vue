@@ -10,16 +10,9 @@ defineProps({
 </script>
 
 <template>
-  <h1>Reserve Vehicle</h1>
+  <h1>Vehicle Booked!</h1>
   <h2>Start: {{start}}  End: {{end}}</h2>
   <VehicleCard v-if="vehicle" :vehicle="vehicle" :types="types">
-    <template #actions>
-      <v-card-actions v-if="start">
-        <v-btn color="indigo-darken-3" @click="bookIt" :to="{ name: 'book', params: { id: vehicle.id, start: start, end: end }}"
-        >Make Booking
-        </v-btn>
-      </v-card-actions>
-    </template>
   </VehicleCard>
   <p v-else>
     No vehicle found
@@ -53,15 +46,6 @@ export default {
     dailyRate(item) {
       const t = this.types?.find( (t) => t.type === item.category)
       return t ? t.cost : ""
-    },
-    async bookIt() {
-      this.createBooking({
-        vehicle_id: this.id,
-        from: this.start,
-        to: this.end
-      })
-      this.$router.push({ name: 'book', params: {
-        id: this.id, start: this.start, end: this.end }})
     }
   },
   created() {

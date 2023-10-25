@@ -14,6 +14,7 @@ import * as directives from 'vuetify/directives';
 import Home from "@/components/Home.vue";
 import VehicleList from "@/components/VehicleList.vue";
 import VehicleReserve from "@/components/VehicleReserve.vue";
+import VehicleConfirm from "@/components/VehicleConfirm.vue";
 
 const vuetify = createVuetify({
   components,
@@ -45,7 +46,7 @@ const routes = [
   {
     path: '/book/:id/:start/:end',
     name: 'book',
-    component: VehicleReserve,
+    component: VehicleConfirm,
     props: ({params}) => ({
       ...params,
       id: Number.parseInt(params.id, 10) || 0})
