@@ -3,41 +3,43 @@ import VehicleCard from "@/components/VehicleCard.vue";
 </script>
 
 <template>
-  <div>
     <h1>Vehicles</h1>
     <v-row>
-      <v-text-field
-          v-model="start"
-          type="date"
-          :min="today"
-          label="Start Date"
-          prepend-icon="event"
-      ></v-text-field>
-      <v-text-field
-          v-model="end"
-          type="date"
-          :min="today"
-          label="End Date"
-          prepend-icon="event"
-      ></v-text-field>
-
+      <v-col>
+        <v-text-field
+            v-model="start"
+            type="date"
+            :min="today"
+            label="Start Date"
+            prepend-icon="event"
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-text-field
+            v-model="end"
+            type="date"
+            :min="today"
+            label="End Date"
+            prepend-icon="event"
+        ></v-text-field>
+      </v-col>
     </v-row>
-
-    <VehicleCard v-for="vehicle in available"
-                 :vehicle="vehicle"
-                 :key="vehicle.id"
-                 :types="types"
-    >
-      <template #actions>
-        <v-card-actions v-if="start">
-          <v-btn color="indigo-darken-3" :to="{ name: 'reserve', params: { id: vehicle.id, start: start, end: end }}"
-          >Select vehicle
-          </v-btn>
-        </v-card-actions>
-      </template>
-    </VehicleCard>
-
-  </div>
+    <v-row>
+      <v-col v-for="vehicle in available"  :key="vehicle.id" class="pa-1 v-col-6 v-col-md-4">
+        <VehicleCard
+            :vehicle="vehicle"
+            :types="types"
+        >
+          <template #actions>
+            <v-card-actions v-if="start">
+              <v-btn color="indigo-darken-3" :to="{ name: 'reserve', params: { id: vehicle.id, start: start, end: end }}"
+              >Select vehicle
+              </v-btn>
+            </v-card-actions>
+          </template>
+        </VehicleCard>
+      </v-col>
+    </v-row>
 </template>
 
 <script>

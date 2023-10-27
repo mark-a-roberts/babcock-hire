@@ -6,10 +6,12 @@ defineProps({
   end: String
 })
 
+import { capitalize } from "@/helpers/string";
+
 </script>
 
 <template>
-  <v-card width="400"
+  <v-card min-width="150px"
           color="#dddddd"
           class="ma-2"
   >
@@ -19,8 +21,8 @@ defineProps({
     </v-card-item>
     <slot name="text">
       <v-card-text>
-        <p>Vehicle type: {{ vehicle.category }}</p>
-        <p>Fuel: {{ vehicle.fuel }}</p>
+        <p>Vehicle type: {{ capitalize(vehicle.category) }}</p>
+        <p>Fuel: {{ capitalize(vehicle.fuel) }}</p>
         <p>Cost/day: £{{ dailyRate(vehicle) }}</p>
       </v-card-text>
     </slot>

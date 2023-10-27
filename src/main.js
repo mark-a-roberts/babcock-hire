@@ -12,6 +12,7 @@ import {createVuetify} from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import Home from "@/components/Home.vue";
+import About from "@/components/About.vue";
 import VehicleList from "@/components/VehicleList.vue";
 import VehicleReserve from "@/components/VehicleReserve.vue";
 import VehicleConfirm from "@/components/VehicleConfirm.vue";
@@ -23,7 +24,6 @@ const vuetify = createVuetify({
 
 // 1. Define route components.
 // These can be imported from other files
-const About = {template: '<div>About</div>'}
 
 // 2. Define some routes
 // Each route should map to a component.
